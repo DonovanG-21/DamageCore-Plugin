@@ -1,0 +1,82 @@
+# =============================================================
+# Unreal Engine 5 — Plugin .gitignore
+# =============================================================
+
+# ---- Binaries ----
+Binaries/
+Build/
+
+# ---- Intermediate (generated build files) ----
+Intermediate/
+
+# ---- Saved (logs, config, screenshots) ----
+Saved/
+
+# ---- Generated source files ----
+*.generated.h
+*.gen.cpp
+
+# ---- Visual Studio ----
+.vs/
+*.VC.db
+*.VC.opendb
+*.sdf
+*.suo
+*.user
+*.userosscache
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# ---- Rider / CLion ----
+.idea/
+cmake-build-*/
+*.iws
+*.iml
+*.ipr
+
+# ---- VSCode ----
+.vscode/
+
+# ---- OS files ----
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ---- Unreal crash reports & logs ----
+*.log
+*.dmp
+*.tmp
+
+# ---- Compiled shader cache ----
+DerivedDataCache/
+
+# ---- PCH files ----
+*.pch
+*.gch
+
+# ---- Distribution / packaging ----
+dist/
+release/
+*.zip
+*.7z
+*.tar.gz
+
+# =============================================================
+# Keep these tracked
+# =============================================================
+
+# Plugin descriptor and config
+!*.uplugin
+
+# Source code
+!Source/**
+
+# Public assets & data tables
+!Content/**
+
+# Documentation
+!README.md
+!LICENSE
+!.gitignore

@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "DamageCore",
+	"Description": "",
+	"Category": "Other",
+	"CreatedBy": "Donovan GODART",
+	"CreatedByURL": "",
+	"DocsURL": "https://github.com/DonovanG-21/DamageCore-Plugin",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"EngineVersion": "5.7.0",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "DamageCore",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
