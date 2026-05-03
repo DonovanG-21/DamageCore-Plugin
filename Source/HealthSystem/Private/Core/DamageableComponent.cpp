@@ -3,7 +3,8 @@
 #include "Core/DamageableComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Engine/World.h"
-#include "Engine/HitResult.h"
+#include "UObject/ConstructorHelpers.h"
+#include "GameFramework/Pawn.h"
 #include "TimerManager.h"
 
 
@@ -180,6 +181,25 @@ bool UDamageableComponent::CanBeKilledByActor(const AActor* ActorToCheck)
 
 #pragma region STATES
 
+FDamageValue UDamageableComponent::HasDamageTag(const FGameplayTag& DamageTag, const TSubclassOf<AActor> ActorClassToDamage) const
+{
+	if (!DamageFactors.IsEmpty())
+	{
+		if (const FDealDamageInfo* DealDamageInfo = DamageFactors.Find(DamageTag))
+		{
+			for (const auto& DamageValue : DealDamageInfo->DamageValues)
+			{
+				if (ActorClassToDamage->IsChildOf(DamageValue.ActorClass))
+				{
+					return DamageValue;
+				}
+			}
+		}
+	}
+	
+	return FDamageValue();
+}
+
 // ===================== OVERRIDABLE ==============================
 
 // Requires both GetOwner()->CanBeDamaged() == true AND Health > 0.
@@ -353,12 +373,12 @@ float UDamageableComponent::TryToDealDamage(AActor* ActorToDamage, const FGamepl
 	{
 		// GetNetConnection() != nullptr means the actor is owned by a remote client
 		// — safe to send a Client RPC. Local/server-owned actors have no connection.
-		if (GetOwner()->GetNetConnection())
+		if (GetOwner()->GetNetMode() != NM_Client || GetOwner()->GetNetConnection())
 		{
 			ClientNotifyDamageDealt(AppliedDamage, HitResult, ActorToDamage, TargetComponent->GetHealth());
 		}
 		
-		if (TargetComponent->GetOwner()->GetNetConnection())
+		if (TargetComponent->GetOwner()->GetNetMode() != NM_Client || TargetComponent->GetOwner()->GetNetConnection())
 		{
 			TargetComponent->ClientNotifyDamageTaken(AppliedDamage, HitResult, GetOwner());
 		}
@@ -684,18 +704,10 @@ float UDamageableComponent::PredictHealthAfterDamage(AActor* ActorToDamage, cons
 // Returns a default-constructed (invalid) FDamageValue if neither source has a match.
 FDamageValue UDamageableComponent::FindDamageValue(const FGameplayTag& DamageTag, const TSubclassOf<AActor> ActorClassToDamage) const
 {
-	if (!DamageFactors.IsEmpty())
+	const FDamageValue FoundedDamageValue = HasDamageTag(DamageTag, ActorClassToDamage);
+	if (FoundedDamageValue.IsValid())
 	{
-		if (const FDealDamageInfo* DealDamageInfo = DamageFactors.Find(DamageTag))
-		{
-			for (const auto& DamageValue : DealDamageInfo->DamageValues)
-			{
-				if (ActorClassToDamage->IsChildOf(DamageValue.ActorClass))
-				{
-					return DamageValue;
-				}
-			}
-		}
+		return FoundedDamageValue;
 	}
 	
 	if (IsValid(UniversalDamageTable))

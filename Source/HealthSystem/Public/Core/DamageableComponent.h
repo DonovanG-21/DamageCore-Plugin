@@ -6,6 +6,8 @@
 #include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "Data/HealthSystemTypes.h"
+#include "Engine/HitResult.h"
+
 #include "DamageableComponent.generated.h"
 
 
@@ -220,6 +222,10 @@ public:
 	/** Returns true if Health is above zero. */
 	UFUNCTION(BlueprintCallable, Category="Health")
 	FORCEINLINE bool HasHealth() const { return Health > 0.f; }
+	
+	UFUNCTION(BlueprintCallable, Category="Health")
+	FDamageValue HasDamageTag(const FGameplayTag& DamageTag, const TSubclassOf<AActor> ActorClassToDamage) const;
+	
 
 	/**
 	 * Returns true if the owner can currently receive damage.
